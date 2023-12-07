@@ -20,6 +20,11 @@ function App() {
       id: Math.random(),
       text: "Test-3",
       completed: false
+    },
+    {
+      id: Math.random(),
+      text: "Test-4",
+      completed: false
     }
   ]);
 
