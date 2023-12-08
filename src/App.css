@@ -61,10 +61,7 @@ body {
   height: 50px;
 }
 
-.List div input, button{
-  width: 25px;
-    height: 25px;
-}
+
 
 .Footer{
   width: 100%;
@@ -85,4 +82,23 @@ body {
 .Footer div button{
   width: 100px;
   height: 40px;
+}
+
+.online{
+  background-color: green;
+  width: 25%;
+  height: 2px;
+  position: absolute;
+}
+
+.ofline{
+  position: absolute;
+}
+
+.Change-task{
+  width: 60%;
+}
+
+.change{
+  width: 20%;
 }
