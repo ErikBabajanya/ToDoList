@@ -50,9 +50,11 @@ body {
   display: flex;
   flex-direction: column;
   align-items: center;
+  max-height: 200px;
+  overflow: overlay;
 }
 
-.List div{
+.listDiv{
   width: 90%;
   display: flex;
   justify-content: space-between;
@@ -60,7 +62,6 @@ body {
   border-bottom: 1px solid;
   height: 50px;
 }
-
 
 
 .Footer{
@@ -100,5 +101,43 @@ body {
 }
 
 .change{
-  width: 20%;
+
+}
+
+.DivButton{
+  width: 120px;
+  display: flex;
+}
+
+.display{
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.button{
+  width: 60px;
+  height: 40px;
+}
+
+.Add{
+  width: 45px;
+    height: 45px;
+}
+
+.clear{
+  width: 45px;
+  height: 45px;
+}
+
+.timeFlex{
+  display: flex;
+  width: 100px;
+}
+
+.ListControl{
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
 }
