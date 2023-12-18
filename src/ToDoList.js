@@ -1,5 +1,5 @@
 import { MdChangeCircle, MdDeleteForever,MdCheckBoxOutlineBlank,MdSaveAlt,MdCancel } from "react-icons/md";
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 
 function ToDoList({ toDoList, onChange, onDelete, setDivs, setToDoList }) {
   const [editingIndex, setEditingIndex] = useState(null);
@@ -7,37 +7,47 @@ function ToDoList({ toDoList, onChange, onDelete, setDivs, setToDoList }) {
   const [draggedIndex, setDraggedIndex] = useState(null);
   const dragItem = useRef(null);
   const dragOverItem = useRef(null);
+  useEffect(() => {
+    // const newToDoList = toDoList.map((item) => {
+    //   if(currentDate > item.hours){
+    //     item.archive = true
+    //   }
+    //   return item
+    // })
+    // setToDoList(newToDoList)
+    const currentDate = new Date();
+    toDoList.map((item) => {
+      if(currentDate.getTime() > new Date(item.myTime).getTime()){
+        item.archive = true
+      }
+      return item
+      
+    })
+  }, [toDoList]);
 
-
-  
   const dragStart = (e, item) => {
     dragItem.current = item;
   };
 
-const drop = () => {
-  if (!dragItem.current || !dragOverItem.current) {
-    return;
-  }
+  const drop = () => {
+    if (!dragItem.current || !dragOverItem.current) {
+      return;
+    }
 
-  const copyListItem = [...toDoList];
-  const dragItemIndex = copyListItem.findIndex((item) => item === dragItem.current);
-  const dragOverIndex = copyListItem.findIndex((item) => item === dragOverItem.current);
+    const copyListItem = [...toDoList];
+    const dragItemIndex = copyListItem.findIndex((item) => item === dragItem.current);
+    const dragOverIndex = copyListItem.findIndex((item) => item === dragOverItem.current);
 
-  if (dragItemIndex === -1 || dragOverIndex === -1) {
-    return;
-  }
+    if (dragItemIndex === -1 || dragOverIndex === -1) {
+      return;
+    }
 
-  const [draggedItem] = copyListItem.splice(dragItemIndex, 1);
-  copyListItem.splice(dragOverIndex, 0, draggedItem);
-  dragItem.current = null;
-  dragOverItem.current = null;
-
-  // Use setToDoList to update the state
-  setToDoList(copyListItem);
-};
-
-// ...
-
+    const [draggedItem] = copyListItem.splice(dragItemIndex, 1);
+    copyListItem.splice(dragOverIndex, 0, draggedItem);
+    dragItem.current = null;
+    dragOverItem.current = null;
+    setToDoList(copyListItem);
+  };
   const handleDragStart = (index) => {
     setDraggedIndex(index);
   };
@@ -51,7 +61,7 @@ const drop = () => {
       newDivs.splice(draggedIndex, 1);
       newDivs.splice(index, 0, draggedItem);
 
-      setDivs(newDivs); // Используйте setDivs вместо setToDoList
+      setDivs(newDivs);
       setDraggedIndex(index);
     }
   };
@@ -82,6 +92,7 @@ const drop = () => {
   return (
     <div className='List'>
       {toDoList.map((list, index) => (
+        !list.archive && (
         <div className='listDiv'
           key={index}
           draggable
@@ -126,9 +137,7 @@ const drop = () => {
               <div className="ListControl">
                 <span>{list.text}</span>
                 <div>
-                  <span>{list.hours}:</span>
-                  <span>{list.minutes}:</span>
-                  <span>{list.seconds}</span>
+                  <span>{list.myTime}</span>
                 </div>
               </div>
               <span className={list.completed ? "online" : "offline"} />
@@ -139,7 +148,7 @@ const drop = () => {
             </div>
           )}
         </div>
-      ))}
+      )))}
     </div>
   );
 }

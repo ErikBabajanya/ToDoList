@@ -3,13 +3,14 @@ import { IoMdAddCircleOutline } from "react-icons/io";
 
 function Input({ onAdd }) {
   const [text, setText] = useState("");
-  const [date, setDate] = useState("")
+  const [date, setDate] = useState("");
+  const [time, setTime] = useState("");
 
   const onAddList = () => {
-    if(text === "") return
-    onAdd(text, date);
     const currentDate = new Date();
-    console.log(currentDate === date);
+    let myTime = date + " " + time;
+    if(text === "") return
+    onAdd(text, myTime);
     setText("");
   };
 
@@ -22,6 +23,7 @@ function Input({ onAdd }) {
   return (
     <div className="Header">
       <input 
+        className="width"
         placeholder="Add Task"
         value={text}
         onChange={(e) => {
@@ -29,15 +31,25 @@ function Input({ onAdd }) {
         }}
         onKeyPress={handleKeyPress}
       />
-      <div>
         <input 
-          type="datetime-local"
+          className="low"
+          type="date"
           value={date}
           onChange={(e) => {
             setDate(e.target.value)
           }}  
+          onKeyPress={handleKeyPress}
         />
-      </div>
+         <input 
+          className="low"
+          type="time"
+          value={time}
+          onChange={(e) => {
+            setTime(e.target.value)
+          }}  
+          onKeyPress={handleKeyPress}
+        />
+      
       <IoMdAddCircleOutline className="Add" onClick={onAddList}/>
     </div>
   );
