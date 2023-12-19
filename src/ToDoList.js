@@ -1,9 +1,15 @@
-import { MdChangeCircle, MdDeleteForever,MdCheckBoxOutlineBlank,MdSaveAlt,MdCancel } from "react-icons/md";
-import React, { useState, useRef, useEffect } from 'react';
+import {
+  MdChangeCircle,
+  MdDeleteForever,
+  MdCheckBoxOutlineBlank,
+  MdSaveAlt,
+  MdCancel,
+} from "react-icons/md";
+import React, { useState, useRef, useEffect } from "react";
 
 function ToDoList({ toDoList, onChange, onDelete, setDivs, setToDoList }) {
   const [editingIndex, setEditingIndex] = useState(null);
-  const [editedText, setEditedText] = useState('');
+  const [editedText, setEditedText] = useState("");
   const [draggedIndex, setDraggedIndex] = useState(null);
   const dragItem = useRef(null);
   const dragOverItem = useRef(null);
@@ -17,12 +23,11 @@ function ToDoList({ toDoList, onChange, onDelete, setDivs, setToDoList }) {
     // setToDoList(newToDoList)
     const currentDate = new Date();
     toDoList.map((item) => {
-      if(currentDate.getTime() > new Date(item.myTime).getTime()){
-        item.archive = true
+      if (currentDate.getTime() > new Date(item.myTime).getTime()) {
+        item.archive = true;
       }
-      return item
-      
-    })
+      return item;
+    });
   }, [toDoList]);
 
   const dragStart = (e, item) => {
@@ -35,8 +40,12 @@ function ToDoList({ toDoList, onChange, onDelete, setDivs, setToDoList }) {
     }
 
     const copyListItem = [...toDoList];
-    const dragItemIndex = copyListItem.findIndex((item) => item === dragItem.current);
-    const dragOverIndex = copyListItem.findIndex((item) => item === dragOverItem.current);
+    const dragItemIndex = copyListItem.findIndex(
+      (item) => item === dragItem.current
+    );
+    const dragOverIndex = copyListItem.findIndex(
+      (item) => item === dragOverItem.current
+    );
 
     if (dragItemIndex === -1 || dragOverIndex === -1) {
       return;
@@ -70,7 +79,6 @@ function ToDoList({ toDoList, onChange, onDelete, setDivs, setToDoList }) {
     setDraggedIndex(null);
   };
 
-
   const handleEditStart = (index, text) => {
     setEditingIndex(index);
     setEditedText(text);
@@ -78,7 +86,7 @@ function ToDoList({ toDoList, onChange, onDelete, setDivs, setToDoList }) {
 
   const handleEditCancel = () => {
     setEditingIndex(null);
-    setEditedText('');
+    setEditedText("");
   };
 
   const handleEditSave = (index) => {
@@ -87,68 +95,81 @@ function ToDoList({ toDoList, onChange, onDelete, setDivs, setToDoList }) {
       text: editedText,
     });
     setEditingIndex(null);
-    setEditedText('');
+    setEditedText("");
   };
   return (
-    <div className='List'>
-      {toDoList.map((list, index) => (
-        !list.archive && (
-        <div className='listDiv'
-          key={index}
-          draggable
-          onDragStart={() => handleDragStart(index)}
-          onDragOver={(e) => {
-            e.preventDefault();
-            handleDragOver(index);
-          }}
-          onDragEnd={handleDragEnd}
-        >
-          <MdCheckBoxOutlineBlank
-            className={list.completed ? "checked" : ""}
-            onClick={() => {
-              onChange(index, {
-                ...list,
-                completed: !list.completed,
-              });
-            }}
-          />
-          {editingIndex === index ? (
-            <div className='display'>
-              <input
-                className='Change-task'
-                type="text"
-                value={editedText}
-                onChange={(e) => setEditedText(e.target.value)}
-              />
-              <div className='DivButton'>
-                <MdSaveAlt className='button' onClick={() => handleEditSave(index)} />
-                <MdCancel className='button' onClick={handleEditCancel} />
-              </div>
-            </div>
-          ) : (
-            <div className='display'
-              onDragStart={(e) => dragStart(e, list)}
+    <div className="List">
+      {toDoList.map(
+        (list, index) =>
+          !list.archive && (
+            <div
+              className="listDiv"
+              key={index}
+              draggable
+              onDragStart={() => handleDragStart(index)}
               onDragOver={(e) => {
                 e.preventDefault();
                 handleDragOver(index);
               }}
               onDragEnd={handleDragEnd}
-              >
-              <div className="ListControl">
-                <span>{list.text}</span>
-                <div>
-                  <span>{list.myTime}</span>
+            >
+              <MdCheckBoxOutlineBlank
+                className={list.completed ? "checked" : ""}
+                onClick={() => {
+                  onChange(index, {
+                    ...list,
+                    completed: !list.completed,
+                  });
+                }}
+              />
+              {editingIndex === index ? (
+                <div className="display">
+                  <input
+                    className="Change-task"
+                    type="text"
+                    value={editedText}
+                    onChange={(e) => setEditedText(e.target.value)}
+                  />
+                  <div className="DivButton">
+                    <MdSaveAlt
+                      className="button"
+                      onClick={() => handleEditSave(index)}
+                    />
+                    <MdCancel className="button" onClick={handleEditCancel} />
+                  </div>
                 </div>
-              </div>
-              <span className={list.completed ? "online" : "offline"} />
-              <div className='DivButton'>
-                <MdChangeCircle className='button' onClick={() => handleEditStart(index, list.text)}/>
-                <MdDeleteForever className='button' onClick={() => onDelete(list.id)} />
-              </div>
+              ) : (
+                <div
+                  className="display"
+                  onDragStart={(e) => dragStart(e, list)}
+                  onDragOver={(e) => {
+                    e.preventDefault();
+                    handleDragOver(index);
+                  }}
+                  onDragEnd={handleDragEnd}
+                >
+                  <div className="ListControl">
+                    <span>{list.text}</span>
+                    <div>
+                      <span>{list.myTime}</span>
+                    </div>
+                  </div>
+                  <span className={list.completed ? "online" : "offline"} />
+                  <div className="DivButton">
+                    <MdChangeCircle
+                      className="button"
+                      onClick={() => handleEditStart(index, list.text)}
+                    />
+                    <MdDeleteForever
+                      className="button"
+                      onClick={() => onDelete(list.id)}
+                    />
+                  </div>
+                </div>
+              )}
             </div>
-          )}
-        </div>
-      )))}
+          )
+      )}
     </div>
   );
 }
