@@ -25,16 +25,57 @@ function App() {
     setToDoList(updatedToDoList);
   };
 
-  const handleOnDelete = (id) => {
+  const handleOnDelete = async (_id) => {
+    console.log(_id);
+    console.log(toDoList);
+    try {
+      const response = await fetch(`${baseUrl}/ToDoList/delete`, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ _id }),
+      });
+      if (response.ok) {
+        setToDoList((prevToDoList) =>
+          prevToDoList.filter((item) => item._id !== _id)
+        );
+      } else {
+        console.error("Error deleting item:", response.statusText);
+      }
+    } catch (error) {
+      console.error("Error deleting item:", error);
+    }
     setToDoList((prevToDoList) =>
-      prevToDoList.filter((item) => item.id !== id)
+      prevToDoList.filter((item) => item._id !== _id)
     );
   };
 
-  const handleClearCompleted = () => {
+  const handleClearCompleted = async () => {
+    const completedIds = toDoList
+      .filter((toDo) => toDo.completed)
+      .map((completedToDo) => completedToDo._id);
+
+    // Update state to remove completed items
     setToDoList((prevToDoList) =>
       prevToDoList.filter((toDo) => !toDo.completed)
     );
+
+    try {
+      const response = await fetch(`${baseUrl}/ToDoList/clearCompleted`, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ completedIds }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to clear completed items on the server");
+      }
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   useEffect(() => {

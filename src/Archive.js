@@ -14,7 +14,7 @@ function Archive({ toDoList, onDelete }) {
         <div className="DivButton">
           <MdDeleteForever
             className="button"
-            onClick={() => onDelete(list.id)}
+            onClick={() => onDelete(list._id)}
           />
         </div>
       </div>

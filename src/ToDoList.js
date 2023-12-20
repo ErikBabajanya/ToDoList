@@ -4,8 +4,10 @@ import {
   MdCheckBoxOutlineBlank,
   MdSaveAlt,
   MdCancel,
+  MdHeight,
 } from "react-icons/md";
 import React, { useState, useRef, useEffect } from "react";
+export const baseUrl = "http://localhost:4000/api";
 
 function ToDoList({ toDoList, onChange, onDelete, setDivs, setToDoList }) {
   const [editingIndex, setEditingIndex] = useState(null);
@@ -13,22 +15,6 @@ function ToDoList({ toDoList, onChange, onDelete, setDivs, setToDoList }) {
   const [draggedIndex, setDraggedIndex] = useState(null);
   const dragItem = useRef(null);
   const dragOverItem = useRef(null);
-  useEffect(() => {
-    // const newToDoList = toDoList.map((item) => {
-    //   if(currentDate > item.hours){
-    //     item.archive = true
-    //   }
-    //   return item
-    // })
-    // setToDoList(newToDoList)
-    const currentDate = new Date();
-    toDoList.map((item) => {
-      if (currentDate.getTime() > new Date(item.myTime).getTime()) {
-        item.archive = true;
-      }
-      return item;
-    });
-  }, [toDoList]);
 
   const dragStart = (e, item) => {
     dragItem.current = item;
@@ -89,14 +75,33 @@ function ToDoList({ toDoList, onChange, onDelete, setDivs, setToDoList }) {
     setEditedText("");
   };
 
-  const handleEditSave = (index) => {
-    onChange(index, {
-      ...toDoList[index],
-      text: editedText,
-    });
-    setEditingIndex(null);
-    setEditedText("");
+  const handleEditSave = async (index, itemId) => {
+    try {
+      const response = await fetch(`${baseUrl}/ToDoList/editList`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          itemId: itemId,
+          newText: editedText,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to edit item on the server");
+      }
+      onChange(index, {
+        ...toDoList[index],
+        text: editedText,
+      });
+      setEditingIndex(null);
+      setEditedText("");
+    } catch (error) {
+      console.error(error);
+    }
   };
+
   return (
     <div className="List">
       {toDoList.map(
@@ -114,7 +119,7 @@ function ToDoList({ toDoList, onChange, onDelete, setDivs, setToDoList }) {
               onDragEnd={handleDragEnd}
             >
               <MdCheckBoxOutlineBlank
-                className={list.completed ? "checked" : ""}
+                className={list.completed ? "checked" : "noCheaked"}
                 onClick={() => {
                   onChange(index, {
                     ...list,
@@ -133,7 +138,7 @@ function ToDoList({ toDoList, onChange, onDelete, setDivs, setToDoList }) {
                   <div className="DivButton">
                     <MdSaveAlt
                       className="button"
-                      onClick={() => handleEditSave(index)}
+                      onClick={() => handleEditSave(index, toDoList[index]._id)}
                     />
                     <MdCancel className="button" onClick={handleEditCancel} />
                   </div>
@@ -149,10 +154,8 @@ function ToDoList({ toDoList, onChange, onDelete, setDivs, setToDoList }) {
                   onDragEnd={handleDragEnd}
                 >
                   <div className="ListControl">
-                    <span>{list.text}</span>
-                    <div>
-                      <span>{list.myTime}</span>
-                    </div>
+                    <span className="left">{list.text}</span>
+                    <span className="right">{list.myTime}</span>
                   </div>
                   <span className={list.completed ? "online" : "offline"} />
                   <div className="DivButton">
@@ -162,7 +165,7 @@ function ToDoList({ toDoList, onChange, onDelete, setDivs, setToDoList }) {
                     />
                     <MdDeleteForever
                       className="button"
-                      onClick={() => onDelete(list.id)}
+                      onClick={() => onDelete(list._id)}
                     />
                   </div>
                 </div>

@@ -9,11 +9,21 @@ function Input({ onAdd }) {
 
   const onAddList = async () => {
     if (text === "") return;
-
-    const myTime = date + " " + time;
+    let myTime = date + " " + time;
     const id = Math.random();
     const completed = false;
     const archive = false;
+    if (myTime === " ") {
+      const now = new Date();
+      now.setDate(now.getDate() + 1);
+      myTime = myTime = now.toLocaleString("en-US", {
+        year: "numeric",
+        month: "2-digit",
+        day: "2-digit",
+        hour: "2-digit",
+        minute: "2-digit",
+      });
+    }
     const data = {
       text: text,
       myTime: myTime,
